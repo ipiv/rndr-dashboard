@@ -33,8 +33,6 @@ const rejectStyle = {
   borderColor: '#ff1744'
 };
 
-const acceptedName = 'rndr_log.txt';
-
 function StyledDropzone(props) {
   const [uploaded, setStatus] = useState(false);
 
