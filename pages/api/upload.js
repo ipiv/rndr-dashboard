@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import Formidable from "Formidable";
+import formidable from "formidable";
 
 export const config = {
   api: {
@@ -9,7 +9,7 @@ export const config = {
 
 export default (req, res) => {
   if (req.method === 'POST') {
-    const form = new Formidable.IncomingForm({
+    const form = new formidable.IncomingForm({
       // multiples: true,
       uploadDir: `uploads`,
       keepExtensions: true
