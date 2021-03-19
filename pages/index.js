@@ -1,19 +1,24 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import StyledDropzone from "../components/StyledDropzone";
+import Statistics from "../components/Statistics";
+import { useState } from "react";
 
 export default function Home() {
+  const [logData, setLogData] = useState(false);
+  const handleLogData = (data) => {
+    setLogData(data)
+  }
   return (
     <div className={styles.container}>
       <Head>
         <title>RNDR dashboard</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <main className={styles.main}>
         <div style={{margin: '2.2em'}}>
           <h1 className={styles.title}>
-            Welcome to <a href="https://rendertoken.com/">RNDR</a> dashboard!
+            Welcome to <a href="https://rendertoken.com/">RNDR</a> dashboard!*
           </h1>
 
           <p className={styles.description}>
@@ -21,9 +26,11 @@ export default function Home() {
             <code className={styles.code}>*not affiliated with <a href="https://home.otoy.com/">OTOY</a></code>
           </p>
         </div>
-
-        <StyledDropzone />
-
+        { logData ? 
+          <Statistics logData={logData} />
+          :
+          <StyledDropzone handleLogData={handleLogData}/>
+        }
       </main>
 
       <footer className={styles.footer}>

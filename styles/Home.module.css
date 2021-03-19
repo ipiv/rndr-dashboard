@@ -116,6 +116,13 @@
   height: 1em;
 }
 
+.logview {
+  width: 30vw;
+  height: 30vh;
+  overflow-y: auto;
+  white-space: pre;
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;

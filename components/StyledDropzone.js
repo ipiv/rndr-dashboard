@@ -1,4 +1,4 @@
-import React, {useMemo, useState } from 'react';
+import {useMemo, useState, useCallback } from 'react';
 import {useDropzone} from 'react-dropzone';
 
 const baseStyle = {
@@ -34,29 +34,21 @@ const rejectStyle = {
 };
 
 function StyledDropzone(props) {
-  const [uploaded, setStatus] = useState(false);
 
-  const dropAccepted = (acceptedFiles) => {
-    const data = new FormData();
-    acceptedFiles.forEach(file => {
-      data.append(file.name, file)
+  const onDropAccepted = useCallback((acceptedFiles) => {
+    acceptedFiles.forEach((file) => {
+      const reader = new FileReader()
+
+      reader.onabort = () => handleLogData(new Error('File reading was Aborted'))
+      reader.onerror = () => handleLogData(new Error('File reading has Failed'))
+      reader.onload = () => {
+        const log = reader.result
+        props.handleLogData(log)
+      }
+      reader.readAsText(file)
     })
-    fetch("/api/upload", {
-      method: "POST",
-      // headers: {
-      //   "Content-Type": "multipart/form-data"
-      // },
-      body: data
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      setStatus(data.success)
-    })
-    .catch(error => {
-      console.error(error);
-    });
-  }
+    
+  }, [])
   
   const {
     getRootProps,
@@ -65,7 +57,7 @@ function StyledDropzone(props) {
     isDragAccept,
     isDragReject,
     isFocused
-  } = useDropzone({accept: 'text/plain', onDropAccepted: dropAccepted});
+  } = useDropzone({accept: 'text/plain', onDropAccepted});
 
   const style = useMemo(() => ({
     ...baseStyle,
@@ -79,7 +71,7 @@ function StyledDropzone(props) {
     isFocused
   ]);
 
-  return (uploaded ? <p>File is uploaded!</p> :
+  return (
     <div className="container-dropzone">
       <div {...getRootProps({style})}>
         <input {...getInputProps()} />
