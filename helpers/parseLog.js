@@ -36,12 +36,14 @@ export const parseLog = (data) => {
       }
       const r_start = line.substr(0, 24);
       const r_end = logLines[i + 1].substr(0, 24);
-      sessions[sessions.length - 1].renders.push({
-        start: r_start,
-        end: r_end,
-        duration: new Date(r_end) - new Date(r_start),
-        success: logLines[i + 4].includes('finishing job'),
-      });
+      if(new Date(r_end) - new Date(r_start) < 12*3600*1000) {
+        sessions[sessions.length - 1].renders.push({
+          start: r_start,
+          end: r_end,
+          duration: new Date(r_end) - new Date(r_start),
+          success: logLines[i + 4].includes('finishing job'),
+        });
+      }
     } else if (logLines.length - 2 == i) {
       sessions[sessions.length - 1]['end'] = logLines[i].substr(0, 24);
       break;

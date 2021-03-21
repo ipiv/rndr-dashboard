@@ -16,7 +16,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <div style={{margin: '2.2em'}}>
+        <div>
           <h1 className={styles.title}>
             Welcome to <a href="https://rendertoken.com/">RNDR</a> dashboard!*
           </h1>

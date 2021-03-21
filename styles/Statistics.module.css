@@ -1,0 +1,37 @@
+.overview {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center
+}
+.overview div {
+  margin: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 8px;
+  background: #151B27;
+  box-shadow: 1px 4px 22px rgb(0 0 0 / 28%);
+}
+
+.overview div h4 {
+  margin: 5px 0;
+  font-weight: 600;
+}
+
+.container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  padding: 3rem 0;
+}
+
+.chartsContainer {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  max-width: 880px;
+  padding: 3rem 0;
+}
+
+.chartsContainer div {
+  margin: 10px
+}

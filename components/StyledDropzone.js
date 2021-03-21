@@ -7,12 +7,12 @@ const baseStyle = {
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  padding: '20px',
+  padding: '3rem',
   borderWidth: 2,
   borderRadius: 2,
-  borderColor: 'rgb(121 121 121)',
+  borderColor: 'rgb(157 157 157)',
   borderStyle: 'dashed',
-  backgroundColor: 'rgb(34 35 43)',
+  backgroundColor: 'rgb(18 21 35)',
   color: '#bdbdbd',
   outline: 'none',
   transition: 'border .24s ease-in-out',
@@ -72,7 +72,7 @@ function StyledDropzone(props) {
   ]);
 
   return (
-    <div className="container-dropzone">
+    <div className="container-dropzone" style={{padding: '3rem 0'}}>
       <div {...getRootProps({style})}>
         <input {...getInputProps()} />
             <p>Drag 'n' drop your <span style={{color: '#0070f3'}}>rndr_log.txt</span> or click</p>

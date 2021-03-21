@@ -1,6 +1,7 @@
 import Highchart from '../components/HighChart'
 import { parseLog } from '../helpers/parseLog'
 import { msToDuration } from '../helpers/msToDuration'
+import styles from '../styles/Statistics.module.css'
 
 export default function Statistics(props) {
   const data = props.logData
@@ -61,7 +62,7 @@ export default function Statistics(props) {
     },
     {
       title: {
-        text: 'RenderTime'
+        text: 'RenderTime per Session'
       },
       yAxis: { labels: { format: '{value} hrs' } },
       tooltip: { valueSuffix: ' hrs', valueDecimals: 2 },
@@ -79,46 +80,65 @@ export default function Statistics(props) {
         },
       ],
     },
+    {
+      title: {
+        text: 'RenderTime/All'
+      },
+      yAxis: { labels: { format: '{value} hrs' } },
+      tooltip: { valueSuffix: ' hrs', valueDecimals: 2 },
+      series: [
+        {
+          name: 'RenderTime',
+          color: '#00AAE6',
+          type: 'line',
+          data: active_sessions.reduce((prev, next) => prev.concat(next.renders.map(render => [
+            new Date(render.start).getTime(),
+            render.duration / (3600 * 1000),
+          ])),[])
+        },
+      ],
+    },
+    {
+      title: {
+        text: 'RenderTime last Session'
+      },
+      yAxis: { labels: { format: '{value} hrs' } },
+      tooltip: { valueSuffix: ' hrs', valueDecimals: 2 },
+      series: [
+        {
+          name: 'RenderTime',
+          color: '#00AAE6',
+          type: 'line',
+          data: active_sessions[active_sessions.length - 1].renders.map(render => [
+            new Date(render.start).getTime(),
+            render.duration / (3600 * 1000),
+          ]),
+        },
+      ],
+    },
   ]
+  console.log(sessions)
+  console.log(chartData)
 
   return (
-    <div>
-      <div>
-        <p>Total Sessions: {overview.sessions_total}</p>
-        <p>Active Sessions: {overview.sessions_active}</p>
-        <p>Renders Uploaded: {overview.renders_success}</p>
-        <p>Renders Failed: {overview.renders_failed}</p>
-        <p>
-          Uptime: {msToDuration(overview.uptime)} (
-          {(overview.uptime / (1000 * 3600)).toFixed(2)} hrs)
-        </p>
-        <p>
-          Time spent rendering:{' '}
-          {msToDuration(overview.rendertime_total)} (
-          {(overview.rendertime_total / (1000 * 3600)).toFixed(2)}{' '}
-          hrs)
-        </p>
-        <p>
-          Time spent idling/preparing:{' '}
-          {msToDuration(overview.uptime - overview.rendertime_total)}{' '}
-          (
-          {(
-            (overview.uptime - overview.rendertime_total) /
-            (1000 * 3600)
-          ).toFixed(2)}{' '}
-          hrs)
-        </p>
+    <div className={styles.container}>
+      <div className={styles.overview}>
+        <div><h4>Total Sessions</h4> {overview.sessions_total}</div>
+        <div><h4>Active Sessions:</h4> {overview.sessions_active}</div>
+        <div><h4>Renders Uploaded:</h4> {overview.renders_success}</div>
+        <div><h4>Renders Failed:</h4> {overview.renders_failed}</div>
+        <div><h4>Uptime:</h4> 
+          {msToDuration(overview.uptime)}
+        </div>
+        <div><h4>RenderTime:</h4>
+          {msToDuration(overview.rendertime_total)}
+        </div>
+        <div><h4>IdleTime:</h4>
+            {msToDuration(overview.uptime - overview.rendertime_total)}
+        </div>
       </div>
-
-      <div
-        style={{ display: 'flex', flexWrap: 'wrap', maxWidth: '800px' }}
-      >
-        <Highchart
-          opts={chartData[0]}
-        />
-        <Highchart
-          opts={chartData[1]}
-        />
+      <div className={styles.chartsContainer}>
+        {chartData.map((d,i) => <Highchart opts={d} key={i}/>)}
       </div>
     </div>
   )
