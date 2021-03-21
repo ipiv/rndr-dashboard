@@ -29,6 +29,7 @@ if (typeof Highcharts === 'object') {
     },
     plotOptions: {
       series: {
+        turboThreshold: 0,
         marker: {
           fillColor: '#FFFFFF',
           lineWidth: 2,

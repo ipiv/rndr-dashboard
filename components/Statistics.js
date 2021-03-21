@@ -77,53 +77,81 @@ export default function Statistics(props) {
         text: 'RenderTime per Session'
       },
       yAxis: { labels: { format: '{value} hrs' } },
-      tooltip: { valueSuffix: ' hrs', valueDecimals: 2 },
+      tooltip: { 
+        valueSuffix: ' hrs',
+        valueDecimals: 2,
+        pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.2f} RNDR</b><br/>'
+      },
       series: [
         {
           name: 'RenderTime',
           color: '#00AAE6',
           type: 'spline',
-          data: active_sessions.map((sess) => [
-            (new Date(sess.start).getTime() +
+          data: active_sessions.map((sess) => ({
+            x: (new Date(sess.start).getTime() +
               new Date(sess.end).getTime()) /
               2,
-            sess.render_time / (3600 * 1000),
-          ]),
+            y: sess.render_time / (3600 * 1000),
+            z: (sess.ob_score * sess.render_time) / (3600 * 1000) / (sess.ob_score > 300 ? 100 : 200)
+          })),
         },
       ],
     },
     {
       title: {
-        text: 'RenderTime/All'
+        text: 'RenderTime - All'
       },
       yAxis: { labels: { format: '{value} hrs' } },
-      tooltip: { valueSuffix: ' hrs', valueDecimals: 2 },
+      tooltip: { 
+        valueSuffix: ' hrs', 
+        valueDecimals: 2, 
+        pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.2f} RNDR</b><br/>'
+      },
       series: [
         {
           name: 'RenderTime',
           color: '#00AAE6',
           type: 'line',
-          data: active_sessions.reduce((prev, next) => prev.concat(next.renders.map(render => [
-            new Date(render.start).getTime(),
-            render.duration / (3600 * 1000),
-          ])),[])
+          data: active_sessions.reduce((prev, next) => prev.concat(next.renders.map(render => ({
+            x: new Date(render.start).getTime(),
+            y: render.duration / (3600 * 1000),
+            z: (next.ob_score * render.duration) / (3600 * 1000) / (next.ob_score > 300 ? 100 : 200)
+          })
+          )),[])
         },
       ],
     },
     {
       title: {
-        text: 'RenderTime current/last Session'
+        text: 'RenderTime - current/last Session'
       },
-      yAxis: { labels: { format: '{value} hrs' } },
-      tooltip: { valueSuffix: ' hrs', valueDecimals: 2 },
+      yAxis: [{ labels: { format: '{value} hrs' } }, {
+        min: 0,
+        max: 1,
+        tickPositions: [],
+        title: ''
+      }],
       series: [
         {
           name: 'RenderTime',
           color: '#00AAE6',
           type: 'line',
+          tooltip: { valueSuffix: ' hrs', valueDecimals: 2, },
           data: active_sessions[active_sessions.length - 1].renders.map(render => [
             new Date(render.start).getTime(),
             render.duration / (3600 * 1000),
+          ]),
+        },
+        {
+          name: 'tokens',
+          color: '#E72647',
+          type: 'line',
+          yAxis: 1,
+          showInLegend: false,
+          tooltip: { valueSuffix: ' RNDR', valueDecimals: 2, },
+          data: active_sessions[active_sessions.length - 1].renders.map(render => [
+            new Date(render.start).getTime(),
+            (overview.last_ob_score * render.duration) / (3600 * 1000) / (overview.last_ob_score > 300 ? 100 : 200),
           ]),
         },
       ],
