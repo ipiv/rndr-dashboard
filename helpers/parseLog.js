@@ -26,7 +26,7 @@ export const parseLog = (data) => {
       });
     } else if (line.includes('node scored')) {
       // OB score updated
-      ob_score = line.match(/(\d)+\.(\d+)$/g)[0];
+      ob_score = line.match(/(\d)+\.(\d+)$/g)[0] || 0;
     } else if (line.includes('setting renderer state to 3')) {
       // render started
       if (logLines.length - 1 < i + 4) {
@@ -62,6 +62,7 @@ export const parseLog = (data) => {
     session['render_time'] = session.renders
       .filter((r) => r.success)
       .reduce((prev, next) => prev + next.duration, 0);
+    session['obh'] = session.ob_score * session['render_time'] / (3600*1000);
   }
   return sessions;
 };
