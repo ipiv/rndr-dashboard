@@ -18,12 +18,12 @@ export default function Home() {
       <main className={styles.main}>
         <div>
           <h1 className={styles.title}>
-            Welcome to <a href="https://rendertoken.com/">RNDR</a> dashboard!*
+            Welcome to <a href="https://rendertoken.com/" target="_blank">RNDR</a> dashboard!*
           </h1>
 
           <p className={styles.description}>
             Personal project! {' '}
-            <code className={styles.code}>*not affiliated with <a href="https://home.otoy.com/">OTOY</a></code>
+            <code className={styles.code}>*not affiliated with <a href="https://home.otoy.com/" target="_blank">OTOY</a></code>
           </p>
         </div>
         { logData ? 
@@ -39,9 +39,11 @@ export default function Home() {
           href="https://twitter.com/ipivDev"
           target="_blank"
           rel="noopener noreferrer"
-        >
+        ><p>Made with 💙 by ipiv</p>
           
-          {<p>Made with 💙 by ipiv</p>/* <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} /> */}
+          {
+          <a href="https://github.com/ipiv/rndr-dashboard" target="_blank"><img src="/github.svg" alt="Github Logo" className={styles.logo}/></a>
+          }
         </a>
       </footer>
     </div>
