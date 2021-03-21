@@ -72,11 +72,15 @@ function StyledDropzone(props) {
   ]);
 
   return (
-    <div className="container-dropzone" style={{padding: '3rem 0'}}>
+    <div className="container-dropzone" style={{padding: '3rem 0'}} onClick={() => {navigator.clipboard.writeText('%LOCALAPPDATA%\\OtoyRndrNetwork')}}>
       <div {...getRootProps({style})}>
         <input {...getInputProps()} />
-            <p>Drag 'n' drop your <span style={{color: '#0070f3'}}>rndr_log.txt</span> or click</p>
-            {isDragReject ? <p>😟That's not the correct RNDR log file</p> : (<p>You can find it at <code style={{backgroundColor: 'rgb(0 112 243 / 3%)', padding: '5px'}}>%LOCALAPPDATA%\OtoyRndrNetwork</code></p>)}
+            <p>Drag {'&'} drop your <span style={{color: '#0070f3'}}>rndr_log.txt</span> or Click here</p>
+            {isDragReject 
+            ? <p>😟That's not the correct RNDR log file</p> 
+            : (<p>You can find it at: {' '}
+              <code style={{backgroundColor: 'rgb(0 112 243 / 3%)', padding: '5px', color: '#0070f3'}}>%LOCALAPPDATA%\OtoyRndrNetwork</code><code>{' '}📋copied on click</code>
+              </p>)}
       </div>
     </div>
   );
