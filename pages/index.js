@@ -39,12 +39,12 @@ export default function Home() {
           href="https://twitter.com/ipivDev"
           target="_blank"
           rel="noopener noreferrer"
-        ><p>Made with 💙 by ipiv</p>
-          
-          {
-          <a href="https://github.com/ipiv/rndr-dashboard" target="_blank"><img src="/github.svg" alt="Github Logo" className={styles.logo}/></a>
-          }
+        >
+          <p>Made with 💙 by ipiv</p>
         </a>
+          {
+            <a href="https://github.com/ipiv/rndr-dashboard" target="_blank"><img src="/github.svg" alt="Github Logo" className={styles.logo}/></a>
+          }
       </footer>
     </div>
   )
