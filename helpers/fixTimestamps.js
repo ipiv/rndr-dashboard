@@ -22,10 +22,16 @@ export const fixTimestamps = (data) => {
     } else if (timestamp > parseDate(logLines[i + 1].substr(0, 19))) {
       offsetUntil = new Date(timestamp).getDate();
     }
-    logLines[i] = line.replace(
-      line.substr(0, 19),
-      new Date(timestamp).toISOString()
-    );
+    try {
+      logLines[i] = line.replace(
+        line.substr(0, 19),
+        new Date(timestamp).toISOString()
+      );
+    } catch(err) {
+      console.log('Logline: ', logLines[i])
+      console.log('Tried to convert: ',timestamp)
+      throw err
+    }
   }
   return logLines;
 };
