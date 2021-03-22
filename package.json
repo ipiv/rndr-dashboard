@@ -8,6 +8,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "@sentry/browser": "^6.2.3",
+    "@sentry/integrations": "^6.2.3",
+    "@sentry/node": "^6.2.3",
+    "@sentry/webpack-plugin": "^1.14.2",
     "@types/highcharts": "^7.0.0",
     "highcharts": "^9.0.1",
     "highcharts-react-official": "^3.0.0",
