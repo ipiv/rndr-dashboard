@@ -6,7 +6,7 @@ import styles from '../styles/Statistics.module.css'
 export default function Statistics(props) {
   const data = props.logData
   const sessions = parseLog(data)
-  const active_sessions = sessions.filter((sess) => sess.renders.length)
+  const active_sessions = sessions.filter((sess) => sess.render_time)
   const overview = {
       sessions_total: sessions.length,
       sessions_active: active_sessions.length,
@@ -25,7 +25,7 @@ export default function Statistics(props) {
           0
       ),
       obh_total: sessions.reduce((prev, next) => prev + next.obh, 0),
-      last_ob_score: active_sessions.slice().reverse().find(sess => sess.ob_score).ob_score
+      last_ob_score: sessions.slice().reverse().find(sess => sess.ob_score).ob_score || 0
   }
   const chartData = [
     {
@@ -43,30 +43,29 @@ export default function Statistics(props) {
         },
         {
           visible: false,
-          softMax: 10
+          softMax: 20
         }
       ],
+      xAxis: { visible: false},
       series: [
         {
+          stacking: 'normal',
           name: 'Uploaded',
           color: '#00E676',
-          type: 'spline',
-          data: active_sessions.map((sess) => [
-            (new Date(sess.start).getTime() +
-              new Date(sess.end).getTime()) /
-              2,
+          type: 'column',
+          data: sessions.map((sess) => [
+            `Start: <b>${new Date(sess.start).toLocaleString()}</b><br/>End: <b>${new Date(sess.end).toLocaleString()}</b>`,
             sess.renders_uploaded,
           ]),
         },
         {
+          stacking: 'normal',
           name: 'Failed',
           color: '#E61034',
           type: 'column',
           yAxis: 1,
           data: sessions.map((sess) => [
-            (new Date(sess.start).getTime() +
-              new Date(sess.end).getTime()) /
-              2,
+            `Start: <b>${new Date(sess.start).toLocaleString()}</b><br/>End: <b>${new Date(sess.end).toLocaleString()}</b>`,
             sess.renders_failed,
           ]),
         },
@@ -82,15 +81,14 @@ export default function Statistics(props) {
         valueDecimals: 2,
         pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.2f} RNDR</b><br/>'
       },
+      xAxis: { visible: false},
       series: [
         {
           name: 'RenderTime',
           color: '#00AAE6',
-          type: 'spline',
+          type: 'column',
           data: active_sessions.map((sess) => ({
-            x: (new Date(sess.start).getTime() +
-              new Date(sess.end).getTime()) /
-              2,
+            name: `Start: <b>${new Date(sess.start).toLocaleString()}</b><br/>End: <b>${new Date(sess.end).toLocaleString()}</b>`,
             y: sess.render_time / (3600 * 1000),
             z: (sess.ob_score * sess.render_time) / (3600 * 1000) / (sess.ob_score > 300 ? 100 : 200)
           })),
@@ -135,7 +133,7 @@ export default function Statistics(props) {
         {
           name: 'RenderTime',
           color: '#00AAE6',
-          type: 'line',
+          type: 'column',
           tooltip: { valueSuffix: ' hrs', valueDecimals: 2, },
           data: active_sessions[active_sessions.length - 1].renders.map(render => [
             new Date(render.start).getTime(),
@@ -145,13 +143,37 @@ export default function Statistics(props) {
         {
           name: 'tokens',
           color: '#E72647',
-          type: 'line',
+          type: 'column',
           yAxis: 1,
           showInLegend: false,
           tooltip: { valueSuffix: ' RNDR', valueDecimals: 2, },
           data: active_sessions[active_sessions.length - 1].renders.map(render => [
-            new Date(render.start).getTime(),
+            new Date(render.end).getTime(),
             (overview.last_ob_score * render.duration) / (3600 * 1000) / (overview.last_ob_score > 300 ? 100 : 200),
+          ]),
+        },
+      ],
+    },
+    {
+      title: {
+        text: 'Utilization per Session'
+      },
+      yAxis: { labels: { format: '{value} %' } },
+      xAxis: {type: 'category', visible: false},
+      tooltip: { 
+        valueSuffix: '%',
+        valueDecimals: 2,
+        pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.2f} RNDR</b><br/>'
+      },
+      series: [
+        {
+          name: 'Utilization',
+          color: '#00AAE6',
+          type: 'column',
+          tooltip: { valueSuffix: ' %', valueDecimals: 2, },
+          data: sessions.filter(sess => sess.render_time).map(sess => [
+            `Start: <b>${new Date(sess.start).toLocaleString()}</b><br/>End: <b>${new Date(sess.end).toLocaleString()}</b>`,
+            sess.duration > sess.render_time ? (sess.render_time / sess.duration) * 100 : null,
           ]),
         },
       ],
