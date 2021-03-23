@@ -160,10 +160,11 @@ export default function Statistics(props) {
           color: '#00AAE6',
           type: 'column',
           tooltip: { valueSuffix: ' %', valueDecimals: 2, },
-          data: sessions.filter(sess => sess.render_time).map(sess => [
-            `Start: <b>${new Date(sess.start).toLocaleString()}</b><br/>End: <b>${new Date(sess.end).toLocaleString()}</b>`,
-            sess.duration > sess.render_time ? (sess.render_time / sess.duration) * 100 : null,
-          ]),
+          data: sessions.filter(sess => sess.render_time && sess.duration > sess.render_time).map(sess => ({
+            name: `Start: <b>${new Date(sess.start).toLocaleString()}</b><br/>End: <b>${new Date(sess.end).toLocaleString()}</b>`,
+            y: (sess.render_time / sess.duration) * 100,
+            z: (sess.ob_score * sess.render_time) / (3600 * 1000) / (sess.ob_score > 300 ? 100 : 200)
+          })),
         },
       ],
     },
