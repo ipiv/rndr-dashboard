@@ -123,34 +123,23 @@ export default function Statistics(props) {
       title: {
         text: 'RenderTime - current/last Session'
       },
-      yAxis: [{ labels: { format: '{value} hrs' } }, {
-        min: 0,
-        max: 1,
-        tickPositions: [],
-        title: ''
-      }],
+      yAxis: { labels: { format: '{value} hrs' } },
+      tooltip: { 
+        valueSuffix: ' hrs', 
+        valueDecimals: 2, 
+        pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.2f} RNDR</b><br/>'
+      },
       series: [
         {
           name: 'RenderTime',
           color: '#00AAE6',
           type: 'column',
           tooltip: { valueSuffix: ' hrs', valueDecimals: 2, },
-          data: active_sessions[active_sessions.length - 1].renders.map(render => [
-            new Date(render.start).getTime(),
-            render.duration / (3600 * 1000),
-          ]),
-        },
-        {
-          name: 'tokens',
-          color: '#E72647',
-          type: 'column',
-          yAxis: 1,
-          showInLegend: false,
-          tooltip: { valueSuffix: ' RNDR', valueDecimals: 2, },
-          data: active_sessions[active_sessions.length - 1].renders.map(render => [
-            new Date(render.end).getTime(),
-            (overview.last_ob_score * render.duration) / (3600 * 1000) / (overview.last_ob_score > 300 ? 100 : 200),
-          ]),
+          data: active_sessions[active_sessions.length - 1].renders.map(render => ({
+            x: new Date(render.start).getTime(),
+            y: render.duration / (3600 * 1000),
+            z: (overview.last_ob_score * render.duration) / (3600 * 1000) / (overview.last_ob_score > 300 ? 100 : 200)
+          })),
         },
       ],
     },
