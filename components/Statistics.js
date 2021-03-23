@@ -27,6 +27,15 @@ export default function Statistics(props) {
       obh_total: sessions.reduce((prev, next) => prev + next.obh, 0),
       last_ob_score: sessions.slice().reverse().find(sess => sess.ob_score).ob_score || 0
   }
+  const allRenders = sessions.reduce((prev, next) => prev.concat(...next.renders), []);
+  const renderTimePerDay = {};
+  allRenders.forEach(render => {
+    const day = new Date(render.end).toLocaleDateString()
+    if (render.success) {
+        renderTimePerDay[day] = renderTimePerDay[day] || 0;
+        renderTimePerDay[day] += render.duration
+    }
+  });
   const chartData = [
     {
       chart: {
@@ -73,6 +82,31 @@ export default function Statistics(props) {
     },
     {
       title: {
+        text: 'Utilization per Session'
+      },
+      yAxis: { labels: { format: '{value} %' } },
+      xAxis: {type: 'category', visible: false},
+      tooltip: { 
+        valueSuffix: '%',
+        valueDecimals: 2,
+        pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.2f} RNDR</b><br/>'
+      },
+      series: [
+        {
+          name: 'Utilization',
+          color: '#00AAE6',
+          type: 'column',
+          tooltip: { valueSuffix: ' %', valueDecimals: 2, },
+          data: sessions.filter(sess => sess.render_time && sess.duration > sess.render_time).map(sess => ({
+            name: `Start: <b>${new Date(sess.start).toLocaleString()}</b><br/>End: <b>${new Date(sess.end).toLocaleString()}</b>`,
+            y: (sess.render_time / sess.duration) * 100,
+            z: (sess.ob_score * sess.render_time) / (3600 * 1000) / (sess.ob_score > 300 ? 100 : 200)
+          })),
+        },
+      ],
+    },
+    {
+      title: {
         text: 'RenderTime per Session'
       },
       yAxis: { labels: { format: '{value} hrs' } },
@@ -92,6 +126,26 @@ export default function Statistics(props) {
             y: sess.render_time / (3600 * 1000),
             z: (sess.ob_score * sess.render_time) / (3600 * 1000) / (sess.ob_score > 300 ? 100 : 200)
           })),
+        },
+      ],
+    },
+    {
+      title: {
+        text: 'RenderTime per day'
+      },
+      yAxis: { labels: { format: '{value} hrs' } },
+      xAxis : {type: 'datetime'},
+      tooltip: { 
+        valueSuffix: ' hrs',
+        valueDecimals: 2,
+        xDateFormat: '%a, %e.%b %Y',
+      },
+      series: [
+        {
+          name: 'RenderTime',
+          color: '#00AAE6',
+          type: 'spline',
+          data: Object.keys(renderTimePerDay).map(day => [new Date(day).getTime(), renderTimePerDay[day] / (3600 * 1000)])
         },
       ],
     },
@@ -129,41 +183,16 @@ export default function Statistics(props) {
         valueDecimals: 2, 
         pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.2f} RNDR</b><br/>'
       },
+
       series: [
         {
           name: 'RenderTime',
           color: '#00AAE6',
           type: 'column',
-          tooltip: { valueSuffix: ' hrs', valueDecimals: 2, },
           data: active_sessions[active_sessions.length - 1].renders.map(render => ({
             x: new Date(render.start).getTime(),
             y: render.duration / (3600 * 1000),
             z: (overview.last_ob_score * render.duration) / (3600 * 1000) / (overview.last_ob_score > 300 ? 100 : 200)
-          })),
-        },
-      ],
-    },
-    {
-      title: {
-        text: 'Utilization per Session'
-      },
-      yAxis: { labels: { format: '{value} %' } },
-      xAxis: {type: 'category', visible: false},
-      tooltip: { 
-        valueSuffix: '%',
-        valueDecimals: 2,
-        pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.2f} RNDR</b><br/>'
-      },
-      series: [
-        {
-          name: 'Utilization',
-          color: '#00AAE6',
-          type: 'column',
-          tooltip: { valueSuffix: ' %', valueDecimals: 2, },
-          data: sessions.filter(sess => sess.render_time && sess.duration > sess.render_time).map(sess => ({
-            name: `Start: <b>${new Date(sess.start).toLocaleString()}</b><br/>End: <b>${new Date(sess.end).toLocaleString()}</b>`,
-            y: (sess.render_time / sess.duration) * 100,
-            z: (sess.ob_score * sess.render_time) / (3600 * 1000) / (sess.ob_score > 300 ? 100 : 200)
           })),
         },
       ],
