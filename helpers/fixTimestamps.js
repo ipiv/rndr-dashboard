@@ -28,8 +28,8 @@ export const fixTimestamps = (data) => {
         new Date(timestamp).toISOString()
       );
     } catch(err) {
-      console.log('Logline: ', logLines[i])
-      console.log('Tried to convert: ',timestamp)
+      console.error('Logline: ', logLines[i])
+      console.error('Tried to convert: ',timestamp)
       throw err
     }
   }

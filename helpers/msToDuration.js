@@ -7,7 +7,7 @@ export const msToDuration = (ms) => {
     return `${days ? days + ' days, ' : ''}${time}`;
   } catch(err) {
     err.Message += '\nTried to convert: '+ms
-    console.trace('Tried to convert: ', ms)
+    console.error('Tried to convert: ', ms)
     throw err
   }
 };
