@@ -7,6 +7,7 @@ export default function Statistics(props) {
   const data = props.logData
   const sessions = parseLog(data)
   const active_sessions = sessions.filter((sess) => sess.render_time)
+  const lastSessWithObScore = sessions.slice().reverse().find(sess => sess.ob_score)
   const overview = {
       sessions_total: sessions.length,
       sessions_active: active_sessions.length,
@@ -25,7 +26,7 @@ export default function Statistics(props) {
           0
       ),
       obh_total: sessions.reduce((prev, next) => prev + next.obh, 0),
-      last_ob_score: sessions.slice().reverse().find(sess => sess.ob_score).ob_score || 0
+      last_ob_score: lastSessWithObScore ? lastSessWithObScore.ob_score : 0
   }
   const allRenders = sessions.reduce((prev, next) => prev.concat(...next.renders), []);
   const renderTimePerDay = {};
