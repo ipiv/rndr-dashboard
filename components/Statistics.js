@@ -190,11 +190,11 @@ export default function Statistics(props) {
           name: 'RenderTime',
           color: '#00AAE6',
           type: 'column',
-          data: active_sessions[active_sessions.length - 1].renders.map(render => ({
+          data: active.sessions.length ? active_sessions[active_sessions.length - 1].renders.map(render => ({
             x: new Date(render.start).getTime(),
             y: render.duration / (3600 * 1000),
             z: (overview.last_ob_score * render.duration) / (3600 * 1000) / (overview.last_ob_score > 300 ? 100 : 200)
-          })),
+          })) : null,
         },
       ],
     },
