@@ -178,11 +178,12 @@ export default function Statistics(props) {
       title: {
         text: 'RenderTime - current/last Session'
       },
-      yAxis: { labels: { format: '{value} hrs' } },
+      yAxis: { labels: { format: '{value} minutes' }, type: 'logarithmic'},
+      xAxis: { type: 'datetime'},
       tooltip: { 
-        valueSuffix: ' hrs', 
+        valueSuffix: ' min', 
         valueDecimals: 2, 
-        pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.2f} RNDR</b><br/>'
+        pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.4f} RNDR</b><br/>'
       },
 
       series: [
@@ -191,8 +192,8 @@ export default function Statistics(props) {
           color: '#00AAE6',
           type: 'column',
           data: active_sessions.length ? active_sessions[active_sessions.length - 1].renders.map(render => ({
-            x: new Date(render.start).getTime(),
-            y: render.duration / (3600 * 1000),
+            x: new Date(render.end).getTime(),
+            y : render.duration / (60 * 1000),
             z: (overview.last_ob_score * render.duration) / (3600 * 1000) / (overview.last_ob_score > 300 ? 100 : 200)
           })) : null,
         },
