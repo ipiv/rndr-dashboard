@@ -178,12 +178,12 @@ export default function Statistics(props) {
       title: {
         text: 'RenderTime - current/last Session'
       },
-      yAxis: { labels: { format: '{value} minutes' }, type: 'logarithmic'},
+      yAxis: { labels: { format: '{value:.2f} minutes' }, type: 'logarithmic'},
       xAxis: { type: 'datetime'},
       tooltip: { 
         valueSuffix: ' min', 
         valueDecimals: 2, 
-        pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y}</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.4f} RNDR</b><br/>'
+        pointFormat: '<span style="color:{point.color}">●</span> {series.name}: <b>{point.y:.2f} min</b><br/><span style="color:#E72647">●</span> Tokens: <b>{point.z:.4f} RNDR</b><br/>'
       },
 
       series: [
